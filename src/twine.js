@@ -19,7 +19,7 @@ console.say(JSON.stringify(twineStore.recs));
 // Query
 http.onGet("query", function (req, resp) {
   jsonData = JSON.parse(req.args.data);
-  console.log("" + JSON.stringify(jsonData));
+  console.log("Query made: " + JSON.stringify(jsonData));
   var recs = qm.search(jsonData);
   return jsonp(req, resp, recs);
 });
