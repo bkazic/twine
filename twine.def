@@ -1,0 +1,8 @@
+[{
+     "name" : "twineMeasurements",
+     "fields" : [
+          { "name" : "Temperature", "type" : "float", "null" : true },
+          { "name" : "Orientation", "type" : "string", "null" : true },
+          { "name" : "Vibration", "type" : "float", "null" : true }
+      ]
+}]
