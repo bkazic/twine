@@ -4,23 +4,12 @@ var tm = require('time');
 // open store from def file
 var twineStore = qm.store("twineMeasurements");
 
-// testing querying
-var recs = qm.search({"$from":"twineMeasurements"});
-console.say(JSON.stringify(recs));
-
 //add test record
-var rec = {"Temperature":24,"Orientation":"Top","Vibration": "still"};
+var rec = {"Temperature":24,"Orientation":"Top","Vibration": "Still"};
 twineStore.add(rec);
 
-// check if the record was added
-console.say(JSON.stringify(twineStore.recs));
-
-// testing out time library
-console.say("String: " + tm.string);
-console.say("Timestamp: " + tm.timestamp);
-console.say("Now: " + tm.now.string);
-console.say("NowUTC: " + tm.nowUTC.string);
-console.say("JSON: " + JSON.stringify(tm.toJSON(tm.now)));
+// initialize counter
+var counter = 0;
 
 // adding timestamp to record
 twineStore.addTrigger({
@@ -28,6 +17,10 @@ twineStore.addTrigger({
     // get current timestamp and add it
     var time = tm.now.string;
     twineStore.add({ $id: rec.$id, DateTime: time});
+
+    // updating and adding counter
+    counter++;
+    twineStore.add({ $id: rec.$id, Counter: counter});
   }
 });
 
@@ -41,7 +34,7 @@ http.onGet("query", function (req, resp) {
   return jsonp(req, resp, recs);
 });
 
-// http://localhost:8080/twine/add?data={"Temperature":24,"Orientation":"Top","Vibration":"still"}
+// http://localhost:8080/twine/add?data={"Temperature":24,"Orientation":"Top","Vibration":"Still"}
 // Add measurement from twineStore
 http.onGet("add", function (req, resp) {
   rec = JSON.parse(req.args.data);
