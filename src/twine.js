@@ -1,3 +1,5 @@
+// import time library
+var tm = require('time');
 
 // open store from def file
 var twineStore = qm.store("twineMeasurements");
@@ -13,6 +15,12 @@ twineStore.add(rec);
 // check if the record was added
 console.say(JSON.stringify(twineStore.recs));
 
+// testing out time library
+console.say("String: " + tm.string);
+console.say("Timestamp: " + tm.timestamp);
+console.say("Now: " + tm.now.string);
+console.say("NowUTC: " + tm.nowUTC.string);
+console.say("JSON: " + JSON.stringify(tm.toJSON(tm.now)));
 
 // ONLINE SERVICES
 // http://localhost:8080/twine/query?data={"$from":"twineMeasurements"}
