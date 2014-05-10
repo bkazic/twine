@@ -9,7 +9,7 @@ var recs = qm.search({"$from":"twineMeasurements"});
 console.say(JSON.stringify(recs));
 
 //add test record
-var rec = {"Temperature":24,"Orientation":"Top","Vibration":1345};
+var rec = {"Temperature":24,"Orientation":"Top","Vibration": "still"};
 twineStore.add(rec);
 
 // check if the record was added
@@ -22,6 +22,15 @@ console.say("Now: " + tm.now.string);
 console.say("NowUTC: " + tm.nowUTC.string);
 console.say("JSON: " + JSON.stringify(tm.toJSON(tm.now)));
 
+// adding timestamp to record
+twineStore.addTrigger({
+  onAdd: function (rec) {
+    // get current timestamp and add it
+    var time = tm.now.string;
+    twineStore.add({ $id: rec.$id, DateTime: time});
+  }
+});
+
 // ONLINE SERVICES
 // http://localhost:8080/twine/query?data={"$from":"twineMeasurements"}
 // Query
@@ -32,7 +41,7 @@ http.onGet("query", function (req, resp) {
   return jsonp(req, resp, recs);
 });
 
-// http://localhost:8080/twine/add?data={"Temperature":24,"Orientation":"Top","Vibration":1345}
+// http://localhost:8080/twine/add?data={"Temperature":24,"Orientation":"Top","Vibration":"still"}
 // Add measurement from twineStore
 http.onGet("add", function (req, resp) {
   rec = JSON.parse(req.args.data);
