@@ -46,12 +46,14 @@ twineStore.addStreamAggr({
   interval: 60*1000
 });
 
+
 // initialize counter
 var counter = 0;
 // calculate sum of counters
 resampledStore.addTrigger({
   onAdd: function (rec) {
     resampledStore.add({ $id: rec.$id, Counter: counter});
+    http.get("http://api.thingspeak.com/update?key=BKUYCZHY03YZC443&field1=99");
     counter = 0;
   }
 });
