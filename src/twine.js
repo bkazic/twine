@@ -21,6 +21,15 @@ console.say(resampledStore.name);
 var rec = {"Temperature":24,"Orientation":"Top","Vibration": "Still"};
 twineStore.add(rec);
 
+var outFile = fs.openAppend("./sandbox/twine/coffee.txt");
+twineStore.addTrigger({
+  onAdd: function (rec) {
+    var mesagge = "New coffe made at " + rec.DateTime.string;
+    outFile.writeLine(mesagge);
+    outFile.flush();
+  }
+});
+
 /*
 // adding stream aggregate
 // I want to get how many times twineStore has been triggered in last 15 min
