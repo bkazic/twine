@@ -21,7 +21,10 @@ console.say(resampledStore.name);
 var rec = {"Temperature":24,"Orientation":"Top","Vibration": "Still"};
 twineStore.add(rec);
 
-var outFile = fs.openAppend("./sandbox/twine/coffee.txt");
+// writes to file wehn new rec is added to store
+var logFile = "./sandbox/twine/coffee.txt";
+if (fs.exists(logFile)) fs.del(logFile);
+var outFile = fs.openAppend(logFile);
 twineStore.addTrigger({
   onAdd: function (rec) {
     var mesagge = "New coffe made at " + rec.DateTime.string;
