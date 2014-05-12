@@ -40,12 +40,21 @@ twineStore.addStreamAggr({
   outStore: resampledStore.name,
   timestamp: "DateTime",
   fields: [
-    { name: "Temperature", interpolator: "previous"}
+    { name: "Temperature", interpolator: "previous" }
   ],
   createStore: false,
   interval: 60*1000
 });
 
+// function to create url
+function makeUrl (http, key, field) {
+  //var url = "";
+  var http = http || "http://api.thingspeak.com";
+  var key = key || "BKUYCZHY03YZC443";
+  var field = field || "null";
+  var url = http + "/update?" + "key=" + key + "&field1=" + field;
+  return url;
+}
 
 // initialize counter
 var counter = 0;
@@ -53,7 +62,8 @@ var counter = 0;
 resampledStore.addTrigger({
   onAdd: function (rec) {
     resampledStore.add({ $id: rec.$id, Counter: counter});
-    http.get("http://api.thingspeak.com/update?key=BKUYCZHY03YZC443&field1=99");
+    var url = makeUrl("http://api.thingspeak.com", "BKUYCZHY03YZC443", rec.Counter);
+    http.get(url);
     counter = 0;
   }
 });
