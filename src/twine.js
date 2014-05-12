@@ -51,7 +51,7 @@ function makeUrl (http, key, field) {
   //var url = "";
   var http = http || "http://api.thingspeak.com";
   var key = key || "BKUYCZHY03YZC443";
-  var field = field || "null";
+  var field = field || 0;
   var url = http + "/update?" + "key=" + key + "&field1=" + field;
   return url;
 }
