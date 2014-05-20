@@ -94,6 +94,13 @@ http.onGet("query", function (req, resp) {
   return jsonp(req, resp, recs);
 });
 
+// http://localhost:8080/twine/lastRec
+// Query last record
+http.onGet("lastRec", function (req, resp) {
+    lastRec = twineStore[twineStore.length - 1];
+    return jsonp(req, resp, lastRec);
+});
+
 // http://localhost:8080/twine/add?data={"Temperature":24,"Orientation":"Top","Vibration":"Still"}
 // Add measurement from twineStore
 http.onGet("add", function (req, resp) {

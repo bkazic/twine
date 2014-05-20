@@ -1,0 +1,43 @@
+﻿body {
+  font: 10px sans-serif;
+}
+
+/*
+.svg {
+    border-style: solid;
+    border-width: 3px;
+    border-color: #4cff00;
+}
+*/
+
+/*lines style from graph axis*/
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+/*
+.x.axis path {
+  display: none;
+}
+
+.y.axis path {
+  display: none;
+}
+*/
+
+.title {
+    text-anchor: middle;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/*lines style from actual graph*/
+.line {
+fill: none;
+stroke: #f00;
+stroke-width: 1.5px;
+}
+
