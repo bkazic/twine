@@ -48,9 +48,9 @@ var drawD3Document = function (data) {
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         //.style("border", "1px solid #cccccc;")
-        .style("border-style", "solid")
-        .style("border-width", "1px")
-        .style("border-color", "#cccccc")
+        //.style("border-style", "solid")
+        //.style("border-width", "1px")
+        //.style("border-color", "#cccccc")
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     

@@ -14,21 +14,27 @@ qm.createStore([{
 // open store from def file
 var twineStore = qm.store("twineMeasurements");
 var resampledStore = qm.store("twineResampledMeasurements");
-//var resampledStore = qm.store("twineMeasurements");
 
-console.say(resampledStore.name);
+// Log file
+var logFile = "./sandbox/twine/coffee.txt";
+if (fs.exists(logFile)) {
+    qm.load.jsonFile(twineStore, logFile);
+}
+
 //add test record
-var rec = {"Temperature":24,"Orientation":"Top","Vibration": "Still"};
-twineStore.add(rec);
+//var rec = {"Temperature":24,"Orientation":"Top","Vibration": "Still"};
+//twineStore.add(rec);
 
 // writes to file wehn new rec is added to store
-var logFile = "./sandbox/twine/coffee.txt";
-if (fs.exists(logFile)) fs.del(logFile);
+// if (fs.exists(logFile)) fs.del(logFile);
 var outFile = fs.openAppend(logFile);
 twineStore.addTrigger({
   onAdd: function (rec) {
-    var mesagge = "New coffe made at " + rec.DateTime.string;
-    outFile.writeLine(mesagge);
+    //var mesagge = "New coffe made at " + rec.DateTime.string;
+    //outFile.writeLine(mesagge);
+    var val = rec.toJSON();
+    delete val.$id;
+    outFile.writeLine(JSON.stringify(val));
     outFile.flush();
   }
 });
@@ -58,24 +64,13 @@ twineStore.addStreamAggr({
   interval: 60*1000
 });
 
-// function to create url
-function makeUrl (http, key, field) {
-  //var url = "";
-  var http = http || "http://api.thingspeak.com";
-  var key = key || "BKUYCZHY03YZC443";
-  var field = field || 0;
-  var url = http + "/update?" + "key=" + key + "&field1=" + field;
-  return url;
-}
-
 // initialize counter
 var counter = 0;
 // calculate sum of counters
 resampledStore.addTrigger({
   onAdd: function (rec) {
     resampledStore.add({ $id: rec.$id, Counter: counter});
-    var url = makeUrl("http://api.thingspeak.com", "BKUYCZHY03YZC443", rec.Counter);
-    http.get(url);
+    //http.get(url);
     counter = 0;
   }
 });

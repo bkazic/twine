@@ -90,4 +90,17 @@ function displayText() {
     var currentTime = date.toLocaleTimeString();
     var text = 'New coffee made on ' + today + ' @ ' + currentTime;
     textarea.innerHTML += text + "\n";
-}
+};
+
+$("#dialog").dialog({
+    position: {at: "right top"},
+    autoOpen: false,
+    modal: true,
+    open: function (ev, ui) {
+        $('#sensorData').attr({ frameBorder:'0', height: "400", scrolling:'no', src: 'https://twine.cc/00001c0d446f8765/widget/?access_key=fa2f09cf7de346b5b2f1f60e3344' });
+    }
+});
+
+$('#opener').click(function () {
+    $('#dialog').dialog('open');
+});
