@@ -2,7 +2,7 @@
 console.log("test");
 
 // Draw graph
-getHttpResponse('http://localhost:8080/twine/query?data={"$from":"twineResampledMeasurements"}', function (data) {
+getHttpResponse('http://localhost:8080/twine/query?data={"$from":"twineAgregatedMeasurements"}', function (data) {
     drawD3Document(data.records);
 });
 
@@ -39,7 +39,7 @@ setInterval(function () {
             console.log("Yes, new data! id$:"+data.$id);
             displayText();
 
-            getHttpResponse('http://localhost:8080/twine/query?data={"$from":"twineResampledMeasurements"}', function (data) {
+            getHttpResponse('http://localhost:8080/twine/query?data={"$from":"twineAgregatedMeasurements"}', function (data) {
                 var last = data.records.length - 1;
                 if (graphIfNew.check(data.records[last].$id)) {
                     console.log("New resampled data! id$: " + data.records[last].$id)

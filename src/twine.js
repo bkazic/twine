@@ -2,41 +2,44 @@
 var tm = require('time');
 
 // create resampled store
-qm.createStore([{
-     "name" : "twineResampledMeasurements",
-     "fields" : [
-          { "name" : "DateTime", "type" : "datetime", "null" : true },
-          { "name" : "Temperature", "type" : "float", "null" : true },
-          { "name" : "Counter", "type" : "float", "null" : true }
-      ]
-}]);
+//qm.createStore([{
+//    "name": "twineAgregatedMeasurements",
+//    "fields": [
+//         { "name": "DateTime", "type": "datetime", "null": true },
+//         { "name": "Temperature", "type": "float", "null": true },
+//         { "name": "Counter", "type": "float", "null": true }
+//    ]
+//}]);
 
 // open store from def file
 var twineStore = qm.store("twineMeasurements");
-var resampledStore = qm.store("twineResampledMeasurements");
+var agregatedStore = qm.store("twineAgregatedMeasurements");
 
-// Log file
+// Log files
 var logFile = "./sandbox/twine/coffee.txt";
-if (fs.exists(logFile)) {
-    qm.load.jsonFile(twineStore, logFile);
-}
+var twineRawLog = "./sandbox/twine/twineStore.txt";
+var twineAgregatedLog = "./sandbox/twine/agregatedStore.txt";
 
-//add test record
-//var rec = {"Temperature":24,"Orientation":"Top","Vibration": "Still"};
-//twineStore.add(rec);
+// Loads logs (if exists)
+if (fs.exists(twineRawLog)) qm.load.jsonFile(twineStore, twineRawLog);
+if (fs.exists(twineAgregatedLog)) qm.load.jsonFile(agregatedStore, twineAgregatedLog);
 
 // writes to file wehn new rec is added to store
 // if (fs.exists(logFile)) fs.del(logFile);
 var outFile = fs.openAppend(logFile);
+var outTwineStoreFile = fs.openAppend(twineRawLog)
 twineStore.addTrigger({
-  onAdd: function (rec) {
-    //var mesagge = "New coffe made at " + rec.DateTime.string;
-    //outFile.writeLine(mesagge);
-    var val = rec.toJSON();
-    delete val.$id;
-    outFile.writeLine(JSON.stringify(val));
-    outFile.flush();
-  }
+    onAdd: function (rec) {
+        // make log in txt format
+        var mesagge = "New coffe made at " + rec.DateTime.string;
+        outFile.writeLine(mesagge);
+        outFile.flush();
+        // make log for twineStore
+        var val = rec.toJSON();
+        delete val.$id;
+        outTwineStoreFile.writeLine(JSON.stringify(val));
+        outTwineStoreFile.flush();
+    }
 });
 
 /*
@@ -53,26 +56,33 @@ twineStore.addStreamAggr({
 
 // create resample aggregator
 twineStore.addStreamAggr({
-  name: "Resampled",
-  type: "resampler",
-  outStore: resampledStore.name,
-  timestamp: "DateTime",
-  fields: [
-    { name: "Temperature", interpolator: "previous" }
-  ],
-  createStore: false,
-  interval: 60*1000
+    name: "Resampled",
+    type: "resampler",
+    outStore: agregatedStore.name,
+    timestamp: "DateTime",
+    fields: [ 
+      //{ name: "Temperature", interpolator: "previous" }
+    ],
+    createStore: false,
+    interval: 60 * 1000
 });
 
 // initialize counter
 var counter = 0;
-// calculate sum of counters
-resampledStore.addTrigger({
-  onAdd: function (rec) {
-    resampledStore.add({ $id: rec.$id, Counter: counter});
-    //http.get(url);
-    counter = 0;
-  }
+var outAgregatedStoreFile = fs.openAppend(twineAgregatedLog)
+agregatedStore.addTrigger({
+    onAdd: function (rec) {
+        console.log("First rec: ", JSON.stringify(rec))
+        agregatedStore.add(rec);
+        // http.get(url);
+        // make log for agregatedStore
+        var val = rec.toJSON();
+        delete val.$id;
+        outAgregatedStoreFile.writeLine(JSON.stringify(val));
+        outAgregatedStoreFile.flush();
+        // reset counter
+        counter = 0; 
+    }
 });
 
 
@@ -83,10 +93,10 @@ resampledStore.addTrigger({
 // http://localhost:8080/twine/query?data={"$from":"twineMeasurements"}
 // Query
 http.onGet("query", function (req, resp) {
-  jsonData = JSON.parse(req.args.data);
-  console.log("Query made: " + JSON.stringify(jsonData));
-  var recs = qm.search(jsonData);
-  return jsonp(req, resp, recs);
+    jsonData = JSON.parse(req.args.data);
+    console.log("Query made: " + JSON.stringify(jsonData));
+    var recs = qm.search(jsonData);
+    return jsonp(req, resp, recs);
 });
 
 // http://localhost:8080/twine/lastRec
@@ -99,11 +109,13 @@ http.onGet("lastRec", function (req, resp) {
 // http://localhost:8080/twine/add?data={"Temperature":24,"Orientation":"Top","Vibration":"Still"}
 // Add measurement from twineStore
 http.onGet("add", function (req, resp) {
-  rec = JSON.parse(req.args.data);
-  rec.DateTime = tm.now.string;
-  counter++;
-  rec.Counter = counter;
-  twineStore.add(rec);
-  console.log("New measurement added: " + JSON.stringify(rec));
-  return jsonp(req, resp, "OK");
+    rec = JSON.parse(req.args.data);
+    // adds timestamp to rec
+    rec.DateTime = tm.now.string;
+    // adds counter to rec
+    counter++;
+    rec.Counter = counter;
+    twineStore.add(rec);
+    console.log("New measurement added: " + JSON.stringify(rec));
+    return jsonp(req, resp, "OK");
 });
