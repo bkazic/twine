@@ -13,6 +13,14 @@
      "fields" : [
 	  { "name" : "DateTime", "type" : "datetime", "null" : true },
           { "name" : "Temperature", "type" : "float", "null" : true },
+	  { "name" : "Counter", "type" : "float", "null" : true }
+      ]
+},
+{
+     "name" : "twineLoadStore",
+     "fields" : [
+	  { "name" : "DateTime", "type" : "datetime", "null" : true },
+          { "name" : "Temperature", "type" : "float", "null" : true },
           { "name" : "Orientation", "type" : "string", "null" : true },
           { "name" : "Vibration", "type" : "string", "null" : true },
 	  { "name" : "Counter", "type" : "float", "null" : true }

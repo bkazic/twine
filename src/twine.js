@@ -12,17 +12,19 @@ var tm = require('time');
 //}]);
 
 // open store from def file
+var twineLoadStore = qm.store("twineLoadStore");
 var twineStore = qm.store("twineMeasurements");
 var agregatedStore = qm.store("twineAgregatedMeasurements");
 
 // Log files
 var logFile = "./sandbox/twine/coffee.txt";
 var twineRawLog = "./sandbox/twine/twineStore.txt";
-var twineAgregatedLog = "./sandbox/twine/agregatedStore.txt";
+//var twineAgregatedLog = "./sandbox/twine/agregatedStore.txt";
 
 // Loads logs (if exists)
-if (fs.exists(twineRawLog)) qm.load.jsonFile(twineStore, twineRawLog);
-if (fs.exists(twineAgregatedLog)) qm.load.jsonFile(agregatedStore, twineAgregatedLog);
+if (fs.exists(twineRawLog)) qm.load.jsonFile(twineLoadStore, twineRawLog);
+//if (fs.exists(twineRawLog)) qm.load.jsonFile(twineStore, twineRawLog);
+//if (fs.exists(twineAgregatedLog)) qm.load.jsonFile(agregatedStore, twineAgregatedLog);
 
 // writes to file wehn new rec is added to store
 // if (fs.exists(logFile)) fs.del(logFile);
@@ -60,8 +62,8 @@ twineStore.addStreamAggr({
     type: "resampler",
     outStore: agregatedStore.name,
     timestamp: "DateTime",
-    fields: [ 
-      //{ name: "Temperature", interpolator: "previous" }
+    fields: [
+      { name: "Temperature", interpolator: "previous" }
     ],
     createStore: false,
     interval: 60 * 1000
@@ -69,22 +71,31 @@ twineStore.addStreamAggr({
 
 // initialize counter
 var counter = 0;
-var outAgregatedStoreFile = fs.openAppend(twineAgregatedLog)
+//var outAgregatedStoreFile = fs.openAppend(twineAgregatedLog)
 agregatedStore.addTrigger({
     onAdd: function (rec) {
         console.log("First rec: ", JSON.stringify(rec))
         agregatedStore.add(rec);
+        //agregatedStore.add({ $id: rec.$id, Counter: counter });
         // http.get(url);
         // make log for agregatedStore
-        var val = rec.toJSON();
-        delete val.$id;
-        outAgregatedStoreFile.writeLine(JSON.stringify(val));
-        outAgregatedStoreFile.flush();
+        //var val = rec.toJSON();
+        //delete val.$id;
+        //outAgregatedStoreFile.writeLine(JSON.stringify(val));
+        //outAgregatedStoreFile.flush();
         // reset counter
-        counter = 0; 
+        counter = 0;
     }
 });
 
+// Loads data from twineLoadStore to twineStore
+for (var ii = 0; ii < twineLoadStore.length; ii++) {
+    var rec = twineLoadStore.recs[ii];
+    var val = rec.toJSON();
+    delete val.$id;
+    console.log("Add rec: ", JSON.stringify(val));
+    twineStore.add(val);
+}
 
 /////////////////////
 // ONLINE SERVICES //
@@ -113,9 +124,10 @@ http.onGet("add", function (req, resp) {
     // adds timestamp to rec
     rec.DateTime = tm.now.string;
     // adds counter to rec
-    counter++;
+    //counter++;
     rec.Counter = counter;
     twineStore.add(rec);
     console.log("New measurement added: " + JSON.stringify(rec));
+    counter++;
     return jsonp(req, resp, "OK");
 });
