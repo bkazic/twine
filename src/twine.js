@@ -61,7 +61,7 @@ twineStore.addStreamAggr({
     outStore: agregatedStore.name,
     timestamp: "DateTime",
     fields: [ 
-      //{ name: "Temperature", interpolator: "previous" }
+      { name: "Temperature", interpolator: "previous" }
     ],
     createStore: false,
     interval: 60 * 1000
@@ -72,8 +72,7 @@ var counter = 0;
 var outAgregatedStoreFile = fs.openAppend(twineAgregatedLog)
 agregatedStore.addTrigger({
     onAdd: function (rec) {
-        console.log("First rec: ", JSON.stringify(rec))
-        agregatedStore.add(rec);
+        agregatedStore.add({ $id: rec.$id, Counter: counter });
         // http.get(url);
         // make log for agregatedStore
         var val = rec.toJSON();
