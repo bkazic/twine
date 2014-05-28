@@ -26,12 +26,16 @@ if (fs.exists(twineRawLog)) qm.load.jsonFile(twineLoadStore, twineRawLog);
 //if (fs.exists(twineRawLog)) qm.load.jsonFile(twineStore, twineRawLog);
 //if (fs.exists(twineAgregatedLog)) qm.load.jsonFile(agregatedStore, twineAgregatedLog);
 
+var counter = 0;
+
 // writes to file wehn new rec is added to store
 // if (fs.exists(logFile)) fs.del(logFile);
 var outFile = fs.openAppend(logFile);
 var outTwineStoreFile = fs.openAppend(twineRawLog)
 twineStore.addTrigger({
     onAdd: function (rec) {
+        counter++;
+        rec.Counter = counter;
         // make log in txt format
         var mesagge = "New coffe made at " + rec.DateTime.string;
         outFile.writeLine(mesagge);
@@ -70,13 +74,13 @@ twineStore.addStreamAggr({
 });
 
 // initialize counter
-var counter = 0;
+// var counter = 0;
 //var outAgregatedStoreFile = fs.openAppend(twineAgregatedLog)
 agregatedStore.addTrigger({
     onAdd: function (rec) {
         console.log("First rec: ", JSON.stringify(rec))
-        agregatedStore.add(rec);
-        //agregatedStore.add({ $id: rec.$id, Counter: counter });
+        //agregatedStore.add(rec);
+        agregatedStore.add({ $id: rec.$id, Counter: counter });
         // http.get(url);
         // make log for agregatedStore
         //var val = rec.toJSON();
@@ -125,9 +129,8 @@ http.onGet("add", function (req, resp) {
     rec.DateTime = tm.now.string;
     // adds counter to rec
     //counter++;
-    rec.Counter = counter;
+    //rec.Counter = counter;
     twineStore.add(rec);
     console.log("New measurement added: " + JSON.stringify(rec));
-    counter++;
     return jsonp(req, resp, "OK");
 });
