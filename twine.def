@@ -1,12 +1,18 @@
 [{
      "name" : "twineMeasurements",
      "fields" : [
-	  { "name" : "DateTime", "type" : "datetime", "null" : true },
+	  { "name" : "DateTime", "type" : "datetime" },
           { "name" : "Temperature", "type" : "float", "null" : true },
           { "name" : "Orientation", "type" : "string", "null" : true },
           { "name" : "Vibration", "type" : "string", "null" : true },
 	  { "name" : "Counter", "type" : "float", "null" : true }
-      ]
+      ],
+      "window" : 10,
+      "timeWindow" : { 
+    	  "duration" : 2, 
+   	  "unit" : "minute", 
+    	  "field" : "DateTime"
+      }
 },
 {
      "name" : "twineAgregatedMeasurements",

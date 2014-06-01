@@ -89,14 +89,14 @@ http.onGet("query", function (req, resp) {
     jsonData = JSON.parse(req.args.data);
     console.log("Query made: " + JSON.stringify(jsonData));
     var recs = qm.search(jsonData);
-    return jsonp(req, resp, recs);
+    return http.jsonp(req, resp, recs);
 });
 
 // http://localhost:8080/twine/lastRec
 // Query last record
 http.onGet("lastRec", function (req, resp) {
     lastRec = twineStore[twineStore.length - 1];
-    return jsonp(req, resp, lastRec);
+    return http.jsonp(req, resp, lastRec);
 });
 
 // http://localhost:8080/twine/add?data={"Temperature":24,"Orientation":"Top","Vibration":"Still"}
@@ -108,5 +108,5 @@ http.onGet("add", function (req, resp) {
     // adds counter to rec
     twineStore.add(rec);
     console.log("New measurement added: " + JSON.stringify(rec));
-    return jsonp(req, resp, "OK");
+    return http.jsonp(req, resp, "OK");
 });

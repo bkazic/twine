@@ -69,11 +69,12 @@ function getHttpResponse(url, onResponse) {
 
 // so we can create several instances of this function
 function ifNew() {
-    this.old;
+    this.old = "";
     // "method" of this function (object)
     this.check = function(data) {
         // if old is not defined, define it
-        (typeof this.old === 'undefined') && (this.old = data);
+        //(typeof this.old === 'undefined') && (this.old = data);
+        //if (typeof this.old === 'undefined') this.old = data;
 
         if (this.old !== data) {
             this.old = data;
@@ -90,6 +91,7 @@ function displayText() {
     var currentTime = date.toLocaleTimeString();
     var text = 'New coffee made on ' + today + ' @ ' + currentTime;
     textarea.innerHTML += text + "\n";
+    //$("TextArea1").innerHTML += text + "\n";
 };
 
 $("#dialog").dialog({
