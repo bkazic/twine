@@ -47,10 +47,6 @@ var drawD3Document = function (data) {
     var svg = d3.select("#canvas-svg").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
-        //.style("border", "1px solid #cccccc;")
-        //.style("border-style", "solid")
-        //.style("border-width", "1px")
-        //.style("border-color", "#cccccc")
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     
@@ -62,12 +58,12 @@ var drawD3Document = function (data) {
     x.domain(d3.extent(data, function (d) { return d.x_axis; }));
     y.domain(d3.extent(data, function (d) { return d.y_axis; }));
 
-    svg.append("g")
-        .attr("class", "title")
-        .append("text")
-        .attr("x", width / 2)
-        .attr("y", 10)
-        .text("Coffee Graph");
+    //svg.append("g")
+    //    .attr("class", "title")
+    //    .append("text")
+    //    .attr("x", width / 2)
+    //    .attr("y", 10)
+    //    .text("Coffee Graph");
 
     svg.append("g")
         .attr("class", "x axis")

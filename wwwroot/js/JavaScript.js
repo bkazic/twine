@@ -5,6 +5,10 @@ console.log("test");
 getHttpResponse('http://localhost:8080/twine/query?data={"$from":"twineAgregatedMeasurements"}', function (data) {
     drawD3Document(data.records);
 });
+// Write Logs
+getHttpResponse('http://localhost:8080/twine/query?data={"$from":"twineMeasurements","$limit":9,"$sort":{"DateTime":-1}}', function (data) {
+    displayLogs(data);
+});
 
 /*
 // Draw update graph
@@ -32,12 +36,14 @@ var textIfNew = new ifNew();
 var graphIfNew = new ifNew();
 setInterval(function () {
     //displayText();
-    getHttpResponse('http://localhost:8080/twine/lastRec', function (data) {
+    //getHttpResponse('http://localhost:8080/twine/lastRec', function (data) {
+    getHttpResponse('http://localhost:8080/twine/query?data={"$from":"twineMeasurements","$limit":9,"$sort":{"DateTime":-1}}', function (data) {
         // on new data
         //if (checkIfNew(data.$id)) {
-        if (textIfNew.check(data.$id)) {
-            console.log("Yes, new data! id$:"+data.$id);
-            displayText();
+        if (textIfNew.check(data.records[0].$id)) {
+            console.log("Yes, new data! id$:" + data.records[0].$id);
+            displayLogs(data);
+            //displayText();
 
             getHttpResponse('http://localhost:8080/twine/query?data={"$from":"twineAgregatedMeasurements"}', function (data) {
                 var last = data.records.length - 1;
@@ -50,7 +56,7 @@ setInterval(function () {
 
         };
     });
-    textarea.scrollTop = textarea.scrollHeight;
+    //textarea.scrollTop = textarea.scrollHeight;
 }, 3000) //timer interval set to 3000ms
 
 
@@ -69,12 +75,13 @@ function getHttpResponse(url, onResponse) {
 
 // so we can create several instances of this function
 function ifNew() {
-    this.old = "";
+    //this.old = "";
+    this.old;
     // "method" of this function (object)
     this.check = function(data) {
         // if old is not defined, define it
         //(typeof this.old === 'undefined') && (this.old = data);
-        //if (typeof this.old === 'undefined') this.old = data;
+        if (typeof this.old === 'undefined') this.old = data;
 
         if (this.old !== data) {
             this.old = data;
@@ -85,13 +92,26 @@ function ifNew() {
 }
 
 // TODO limit length of text to 10 lines
-function displayText() {
-    var date = new Date();
-    var today = date.toLocaleDateString();
-    var currentTime = date.toLocaleTimeString();
-    var text = 'New coffee made on ' + today + ' @ ' + currentTime;
-    textarea.innerHTML += text + "\n";
-    //$("TextArea1").innerHTML += text + "\n";
+//function displayText() {
+//    var date = new Date();
+//    var today = date.toLocaleDateString();
+//    var currentTime = date.toLocaleTimeString();
+//    var text = 'New coffee made on ' + today + ' @ ' + currentTime;
+//    textarea.innerHTML += text + "\n";
+//    //$("TextArea1").innerHTML += text + "\n";
+//};
+
+// TODO limit length of text to 10 lines
+function displayLogs(logs) {   
+    var recs = logs.records;
+    var text = "";
+    recs.forEach(function (rec) {
+        var date = rec.DateTime.split("T")[0];
+        var time = rec.DateTime.split("T")[1];
+        // create and appand text log
+        text += 'New coffee made on ' + date + ' @ ' + time + "\n";
+    })
+    $("#TextArea1").val(text);
 };
 
 $("#dialog").dialog({
