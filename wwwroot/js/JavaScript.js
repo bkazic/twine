@@ -6,7 +6,7 @@ getHttpResponse('http://localhost:8080/twine/query?data={"$from":"twineAgregated
     drawD3Document(data.records);
 });
 // Write Logs
-getHttpResponse('http://localhost:8080/twine/query?data={"$from":"twineMeasurements","$limit":9,"$sort":{"DateTime":-1}}', function (data) {
+getHttpResponse('http://localhost:8080/twine/query?data={"$from":"twineMeasurements","$limit":29,"$sort":{"DateTime":-1}}', function (data) {
     displayLogs(data);
 });
 
@@ -37,7 +37,7 @@ var graphIfNew = new ifNew();
 setInterval(function () {
     //displayText();
     //getHttpResponse('http://localhost:8080/twine/lastRec', function (data) {
-    getHttpResponse('http://localhost:8080/twine/query?data={"$from":"twineMeasurements","$limit":9,"$sort":{"DateTime":-1}}', function (data) {
+    getHttpResponse('http://localhost:8080/twine/query?data={"$from":"twineMeasurements","$limit":29,"$sort":{"DateTime":-1}}', function (data) {
         // on new data
         //if (checkIfNew(data.$id)) {
         if (textIfNew.check(data.records[0].$id)) {
@@ -108,8 +108,14 @@ function displayLogs(logs) {
     recs.forEach(function (rec) {
         var date = rec.DateTime.split("T")[0];
         var time = rec.DateTime.split("T")[1];
-        // create and appand text log
-        text += 'New coffee made on ' + date + ' @ ' + time + "\n";
+        if (rec.DregDrawer != 1) {
+            // create and appand coffee text log
+            text += 'New coffee made on ' + date + ' @ ' + time + "\n";
+        }
+        else {
+            // create and appand dreg drawer text log
+            text += 'Dregdrawer cleaned on ' + date + ' @ ' + time + "\n";
+        }
     })
     $("#TextArea1").val(text);
 };

@@ -21,11 +21,16 @@ var outFile = fs.openWrite(logFile);
 var outTwineStoreFile = fs.openWrite(twineStoreLogFile)
 twineStore.addTrigger({
     onAdd: function (rec) {
-        // increase counter
-        counter++;
-        twineStore.add({ $id: rec.$id, Counter: counter });
-        // make log in txt format
-        var mesagge = "New coffe made at " + rec.DateTime.string;
+        if (rec.DregDrawer != 1) {
+            // increase counter
+            counter++;
+            twineStore.add({ $id: rec.$id, Counter: counter });
+            // make log in txt format
+            var mesagge = "New coffe made at " + rec.DateTime.string;
+        }
+        else {
+            var mesagge = "Dregdrawer cleaned at " + rec.DateTime.string;
+        }
         outFile.writeLine(mesagge);
         outFile.flush();
         // make log for twineStore
@@ -90,13 +95,6 @@ http.onGet("query", function (req, resp) {
     console.log("Query made: " + JSON.stringify(jsonData));
     var recs = qm.search(jsonData);
     return http.jsonp(req, resp, recs);
-});
-
-// http://localhost:8080/twine/lastRec
-// Query last record
-http.onGet("lastRec", function (req, resp) {
-    lastRec = twineStore[twineStore.length - 1];
-    return http.jsonp(req, resp, lastRec);
 });
 
 // http://localhost:8080/twine/add?data={"Temperature":24,"Orientation":"Top","Vibration":"Still"}
