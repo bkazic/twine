@@ -2,7 +2,7 @@
 console.log("test");
 
 // Draw graph
-getHttpResponse('http://localhost:8080/twine/query?data={"$from":"twineAgregatedMeasurements"}', function (data) {
+getHttpResponse('http://localhost:8080/twine/query?data={"$from":"twineAgregatedMeasurements","$limit":4,"$sort":{"DateTime":-1}}', function (data) {
     drawD3Document(data.records);
 });
 // Write Logs
@@ -45,7 +45,7 @@ setInterval(function () {
             displayLogs(data);
             //displayText();
 
-            getHttpResponse('http://localhost:8080/twine/query?data={"$from":"twineAgregatedMeasurements"}', function (data) {
+            getHttpResponse('http://localhost:8080/twine/query?data={"$from":"twineAgregatedMeasurements","$limit":5}', function (data) {
                 var last = data.records.length - 1;
                 if (graphIfNew.check(data.records[last].$id)) {
                     console.log("New resampled data! id$: " + data.records[last].$id)
@@ -125,7 +125,7 @@ $("#dialog").dialog({
     autoOpen: false,
     modal: true,
     open: function (ev, ui) {
-        $('#sensorData').attr({ frameBorder:'0', height: "400", scrolling:'no', src: 'https://twine.cc/00001c0d446f8765/widget/?access_key=fa2f09cf7de346b5b2f1f60e3344' });
+        $('#sensorData').attr({ frameBorder:'0', height: "500", scrolling:"no", src: 'https://twine.cc/00001c0d446f8765/widget/?access_key=fa2f09cf7de346b5b2f1f60e3344' });
     }
 });
 

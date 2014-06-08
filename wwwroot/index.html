@@ -4,7 +4,7 @@
     <link rel="StyleSheet" type="text/css" href="StyleSheet.css" media="screen" />
     <title>Twine WebSite</title>
 </head>
-<body>
+<body style="overflow:hidden;">
     <a href="#" id="opener" style="float:right;">Show last data</a>
     <div id="main" style="margin: 20px auto; width: 450px;">
         <div style="text-align: center">
@@ -16,30 +16,26 @@
             </h1>
         </div>
         <hr style="margin: 30px auto 50px auto; border: 0 none;width: 60px;height: 3px;background-color: rgb(250, 105, 0);">
-        <!--
-        <div>
-            <iframe 
-                width="450" 
-                height="260" 
-                style="border: 1px solid #cccccc;" 
-                src="http://api.thingspeak.com/channels/12155/charts/1?width=450&height=260&results=60&key=BKUYCZHY03YZC443&dynamic=true" >
-            </iframe> 
-        </div>
-        <br />
-        -->
         <div id="canvas-svg" style="width: 450px; height: 260px;"></div>
+        <div style="float: right; font-size: 9px;">
+            Time window:
+            <select id="time_window" name="time_window" style="font-size: inherit; border: 0px; outline: 0px;">
+                <option value="source1.json" selected>1 Day</option>
+                <option value="source2.json">1 Week</option>
+                <option value="source3.json">1 Month</option>
+            </select>​
+        </div>
         <p style="font-size: 12px; margin-top: 30px;">Coffe log: </p>
         <div>
             <textarea id="TextArea1" readonly="readonly" style="border-color: #cccccc; border-width: 1px; resize: none; overflow: auto; width: 448px; font-family: Consolas;" rows="7"></textarea>
         </div>
-        <br />
-        <div style="text-align: center">
-            <!-- <button id="opener" style="position: absolute; top: 0px; right: 0px">Current data</button> -->
-            <!-- <iframe src="https://twine.cc/00001c0d446f8765/widget/?access_key=fa2f09cf7de346b5b2f1f60e3344"></iframe> -->
-        </div>
-        <div id="dialog" style="text-align: center" hidden="hidden">
+        <div id="dialog" style="text-align: center;" hidden="hidden">
             <p style="font-size: 12px">Twine current data: </p>
             <iframe id="sensorData"></iframe>
+        </div>
+        <div id="TwitterTimeline" style="text-align: center; top: 20px; left: 20px; position: absolute; width: 280px;">
+            <a class="twitter-timeline" height="500" lang="EN" data-related="work" href="https://twitter.com/search?q=%23coffee" data-widget-id="473825920436805632">Tweets about "#coffee"</a>
+            <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + "://platform.twitter.com/widgets.js"; fjs.parentNode.insertBefore(js, fjs); } }(document, "script", "twitter-wjs");</script>
         </div>
     </div>
     <!-- Javascript
